@@ -30,7 +30,7 @@ function seg_str(str, charLimit)
 // can use on single strings OR objects (arays)
 function pad_text(vec, charLimit)
 {
-	let pad = '0';
+	let pad = ' ';
 
 	if(typeof(vec) == "string") {
 		return vec.padEnd(charLimit, pad);

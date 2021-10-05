@@ -1,7 +1,6 @@
 // cs-sketch.js; P5 key animation & input fcns.  // CF p5js.org/reference
 // Time-stamp: <2021-10-03 07:14:42>
 
-let foo = ["cooper", "is", "awesome"];
 let debug_on = true;
 
 function setup() // P5 Setup Fcn
@@ -61,7 +60,7 @@ function comp8(str) {
 	const len_req = 8;
 	if (str.length != len_req) { 
 		if (debug_on) {
-			console.log("Password len " + str.length = " != " + len_req);
+			console.log("Password len " + str.length + " != " + len_req);
 		}
 		return false;
 	}

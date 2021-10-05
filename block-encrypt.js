@@ -2,7 +2,7 @@
 // Time-stamp: <2021-10-03 07:14:42>
 
 let foo = ["cooper", "is", "awesome"];
-let debug_on = True;
+let debug_on = true;
 
 function setup() // P5 Setup Fcn
 {
@@ -44,6 +44,18 @@ function pad_text(vec, charLimit)
 	return cpy;
 }
 
+// return true if all chars in str in printable 8bit ascii range
+function in_ascii_range(str) {
+	for (let i = 0; i < str.length; i++) {
+		let c = str.charCodeAt(i);
+		
+		if ( !(c >= 32 && c <= 127) ) {
+			return false;
+		}
+	}
+	return true;
+}
+
 //verifies if password passes comp8 requirements, Boolean return
 function comp8(str) {
 	const len_req = 8;
@@ -51,35 +63,35 @@ function comp8(str) {
 		if (debug_on) {
 			console.log("Password len " + str.length = " != " + len_req);
 		}
-		return False;
+		return false;
 	}
 	
-	let has_upper = False, has_lower = False, has_symbol = False, has_number = False;
+	let has_upper = false, has_lower = false, has_symbol = false, has_number = false;
 	
 	for (let i = 0; i < str.length; i++) {
 		let c = str.charCodeAt(i);
 		
 		if (c >= 48 && c <= 57) {
-			has_number = True;
+			has_number = true;
 		}
 		else if (c >= 65 && c <= 90) {
-			has_upper = True;
+			has_upper = true;
 		}
 		else if (c >= 97 && c <= 122) {
-			has_lower = True;
+			has_lower = true;
 		}
 		// the rest in this range are symbols
 		else if (c >= 32 && c <= 127) {
-			has_symbol = True;
+			has_symbol = true;
 		}
 	}
 	
 	if (has_upper && has_lower && has_symbol && has_number ) {
 		if (debug_on) { console.log("Password is valid comprehensive8."); }
-		return True;
+		return true;
 	}
 	if (debug_on) { console.log("Password is not valid comprehensive8."); }
-	return False;
+	return false;
 }
 
 

@@ -1,11 +1,34 @@
 // cs-sketch.js; P5 key animation & input fcns.  // CF p5js.org/reference
-// Time-stamp: <2021-10-03 07:14:42>
+// Time-stamp: <2021-10-07 20:30:06 cooper>
 
 let debug_on = true;
+let userInput;
+
+let width;
+let height;
+let half_wid;
+let half_hgt;
+
 
 function setup() // P5 Setup Fcn
 {
+	width = windowWidth;
+	height = windowHeight;
+	half_wid = (width / 2);
+	half_hgt = (height / 2);
 
+	createCanvas(width, height);
+	
+	let input_pad = 15;
+	let size = 200;
+    // Setup input-box for input and a callback fcn when button is pressed.
+    userInput = createInput(); // Create an input box, editable.
+    userInput.position(half_wid - (size / 2), half_hgt - input_pad); // Put box on page.
+	userInput.size(size);
+    userButton = createButton( "Encrypt" ); // Create button to help get input data.
+    userButton.position(half_wid - (size / 2), half_hgt + input_pad); // Put button on page.
+	userButton.size(size);
+	userButton.mousePressed(showEncrypt);	
 }
 
 // break up a long string into smaller segments
@@ -30,7 +53,7 @@ function seg_str(str, charLimit)
 // can use on single strings OR objects (arays)
 function pad_text(vec, charLimit)
 {
-	let pad = ' ';
+	let pad = '0';
 
 	if(typeof(vec) == "string") {
 		return vec.padEnd(charLimit, pad);
@@ -105,10 +128,27 @@ function xor_chars(text, pass) {
 	
 }
 
+function showEncrypt() {
+	background(0);
+	textSize(32);
+	fill(255,255,255)
+	let input = userInput.value();
+	text(input, 10, 50);
+
+	text("Does this text pass the comp8 test?: " + comp8(input), 10, 100);
+
+	let padInput = pad_text(input, 27)
+	text(padInput, 10, 150);
+
+	let inputArray = seg_str(padInput, 4);
+	for(block in inputArray) {
+		text(inputArray[block], 10, 200 + (block * 50));
+	}
+}
 
 
 // P5 Frame Re-draw Fcn, Called for Every Frame.
 function draw()
 {
-
+	
 }

@@ -93,6 +93,16 @@ function comp8(str) {
 	return false;
 }
 
+// returns a string of text encrypted with password
+function xor_char(text, pass) {
+	let text_enc = text;
+	for(let i = 0; i < text.length; i++) {
+		text_enc[i] = ((text[i] - 32) ^ (pass[i % pass.length] - 32)) + 32;
+	}
+	return text_enc;
+	
+}
+
 
 
 // P5 Frame Re-draw Fcn, Called for Every Frame.

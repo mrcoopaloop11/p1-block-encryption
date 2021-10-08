@@ -94,10 +94,12 @@ function comp8(str) {
 }
 
 // returns a string of text encrypted with password
-function xor_char(text, pass) {
-	let text_enc = text;
+function xor_chars(text, pass) {
+	let text_enc = "";
 	for(let i = 0; i < text.length; i++) {
-		text_enc[i] = ((text[i] - 32) ^ (pass[i % pass.length] - 32)) + 32;
+		let tx = text.charCodeAt(i) - 32;
+		let px = pass.charCodeAt(i % pass.length) - 32;
+		text_enc += String.fromCharCode((tx ^ px) + 32);
 	}
 	return text_enc;
 	

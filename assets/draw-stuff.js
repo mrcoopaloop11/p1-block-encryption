@@ -12,7 +12,7 @@ function userDialog(x, y, s, p) {
     plaintext.position(x, y); // Put box on page.
 	plaintext.size(s);
 
-    password = createInput("Co_pe!~3"); // Create an input box, editable.
+    password = createInput(); // Create an input box, editable.
     password.position(x, y + (2 * p)); // Put box on page.
 	password.size(s);
 

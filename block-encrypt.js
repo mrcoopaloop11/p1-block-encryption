@@ -2,33 +2,21 @@
 // Time-stamp: <2021-10-07 20:30:06 cooper>
 
 let debug_on = true;
-let userInput;
 
-let width;
-let height;
-let half_wid;
-let half_hgt;
+let plaintext;
+let password;
+let encryptBtn;
 
+let showEncrypt;
 
 function setup() // P5 Setup Fcn
 {
-	width = windowWidth;
-	height = windowHeight;
-	half_wid = (width / 2);
-	half_hgt = (height / 2);
+	createCanvas(windowWidth - 20, displayHeight - 200);
+	background(255);
 
-	createCanvas(width, height);
-	
-	let input_pad = 15;
-	let size = 200;
-    // Setup input-box for input and a callback fcn when button is pressed.
-    userInput = createInput(); // Create an input box, editable.
-    userInput.position(half_wid - (size / 2), half_hgt - input_pad); // Put box on page.
-	userInput.size(size);
-    userButton = createButton( "Encrypt" ); // Create button to help get input data.
-    userButton.position(half_wid - (size / 2), half_hgt + input_pad); // Put button on page.
-	userButton.size(size);
-	userButton.mousePressed(showEncrypt);	
+	userDialog(width / 2, 50, 200, 15);
+    showEncrypt = createDiv("");
+	encryptBtn.mousePressed(showStatus);
 }
 
 // break up a long string into smaller segments
@@ -128,27 +116,50 @@ function xor_chars(text, pass) {
 	
 }
 
-function showEncrypt() {
-	background(0);
-	textSize(32);
-	fill(255,255,255)
-	let input = userInput.value();
-	text(input, 10, 50);
-
-	text("Does this text pass the comp8 test?: " + comp8(input), 10, 100);
-
-	let padInput = pad_text(input, 27)
-	text(padInput, 10, 150);
-
-	let inputArray = seg_str(padInput, 4);
-	for(block in inputArray) {
-		text(inputArray[block], 10, 200 + (block * 50));
+function merge_seg(vec) {
+	let complete = "";
+	for(block in vec) {
+		complete += vec[block];
 	}
+	return complete;
 }
 
+function encrpyt() {
+	let plain = plaintext.value();
+	let pass = password.value();
+
+	if(debug_on) {
+		console.log("Plaintext: " + plain);
+		console.log("Password: " + pass);
+	}
+
+	if(comp8(pass)) {
+		let pTextLength = pass.length;
+		let padInput = pad_text(pass, 27);
+
+		let segInput = seg_str(padInput, 4);
+
+		let segBlocks = Object.keys(segInput).length;
+		for(block in segInput) {
+			segInput[block] = block + segInput[block];
+
+			if((segBlocks - 1) == block) {
+				segInput[block] += String.fromCharCode(pTextLength);
+			}
+		}
+		return xor_chars(plain, merge_seg(segInput));
+	}
+	return "Invalid Password";
+}
+
+function keyPressed() {
+	if(key == "Enter") {
+		showStatus();
+	}
+}
 
 // P5 Frame Re-draw Fcn, Called for Every Frame.
 function draw()
 {
-	
+
 }

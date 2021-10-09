@@ -1,5 +1,5 @@
 // cs-sketch.js; P5 key animation & input fcns.  // CF p5js.org/reference
-// Time-stamp: <2021-10-07 20:30:06 cooper>
+// Time-stamp: <2021-10-08 20:57:55 cooper>
 
 let debug_on = true;
 
@@ -14,8 +14,8 @@ function setup() // P5 Setup Fcn
 	createCanvas(windowWidth - 20, displayHeight - 200);
 	background(255);
 
-	userDialog(width / 2, 50, 200, 15);
-    showEncrypt = createDiv("");
+	userDialog(150, 50, 200, 15);
+    showEncrypt = createP("");
 	encryptBtn.mousePressed(showStatus);
 }
 
@@ -124,32 +124,57 @@ function merge_seg(vec) {
 	return complete;
 }
 
-function encrpyt() {
-	let plain = plaintext.value();
-	let pass = password.value();
+function encrypt(plain, len) {
+	let str = "";
 
-	if(debug_on) {
-		console.log("Plaintext: " + plain);
-		console.log("Password: " + pass);
+	let msg32 = seg_str(plain, 27);
+	for(let c=1; c < Object.keys(msg32).length; c++) {
+		str += encrypt(msg32[c], len);
 	}
 
-	if(comp8(pass)) {
-		let pTextLength = pass.length;
-		let padInput = pad_text(pass, 27);
+	let padInput = pad_text(msg32[0], 27);
 
-		let segInput = seg_str(padInput, 4);
+	let segInput = seg_str(padInput, 7);
 
-		let segBlocks = Object.keys(segInput).length;
-		for(block in segInput) {
-			segInput[block] = block + segInput[block];
+	let segBlocks = Object.keys(segInput).length;
+	for(block in segInput) {
+		segInput[block] = (int(block) + 1) + segInput[block];
 
-			if((segBlocks - 1) == block) {
-				segInput[block] += String.fromCharCode(pTextLength);
-			}
+		if((segBlocks - 1) == block) {
+			if(debug_on) console.log("The length of the plaintext is: " + len)
+			segInput[block] += String.fromCharCode(len);
 		}
-		return xor_chars(plain, merge_seg(segInput));
 	}
-	return "Invalid Password";
+	return merge_seg(segInput) + str;
+}
+
+function decrypt(cipher) {
+	let blocksOf = 8;
+	let msg32 = seg_str(cipher, 32);
+	let str = "";
+	for(let c=1; c < Object.keys(msg32).length; c++) {
+		str += decrypt(msg32[c]);
+	}
+
+	let segInput = seg_str(msg32[0], blocksOf);
+	let length;
+
+	let segBlocks = Object.keys(segInput).length;
+	for(block in segInput) {
+		if(int(segInput[block][0]) != ((block % 4) + 1)) {
+			return "Sequence mismatch at block " + int(block + 1);
+		}
+		
+		segInput[block] = segInput[block].slice(1);
+
+		if((segBlocks - 1) == block) {
+			length = segInput[block].charCodeAt(blocksOf - 2);
+			if(debug_on) console.log("Length found from the cipher text: " + length);
+		}
+	}
+
+	str = merge_seg(segInput).slice(0, 27) + str;
+	return str.slice(0, length);
 }
 
 function keyPressed() {

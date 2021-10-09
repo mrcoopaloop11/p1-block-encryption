@@ -1,5 +1,5 @@
 // Draw stuff, with P5  // CF p5js.org/reference
-// Time-stamp: <2020-02-02 14:46:00 Chuck Siska>
+// Time-stamp: <2021-10-08 20:58:05 cooper>
 // ------------------------------------------------------------
 
 
@@ -12,7 +12,7 @@ function userDialog(x, y, s, p) {
     plaintext.position(x, y); // Put box on page.
 	plaintext.size(s);
 
-    password = createInput(); // Create an input box, editable.
+    password = createInput("Co_pe!~3"); // Create an input box, editable.
     password.position(x, y + (2 * p)); // Put box on page.
 	password.size(s);
 
@@ -35,14 +35,36 @@ function showStatus() {
 	textSize(24);
 	fill(0);
 
-	let ax = encrpyt();
+	// encrypted plaintext
+	let ax = encrypt(plaintext.value(), plaintext.value().length);
+	// encrypted plaintext with password
+	let bx = xor_chars(ax, password.value());
+	// decrypted plaintext
+	let cx = xor_chars(bx, password.value());
+    // back to normal plaintext
+    let dx = decrypt(cx);
+
+	let complete_str = "<b>Plaintext Input: </b>" + plaintext.value() + "<br>"
+					+ "<b>Password Input: </b>" + password.value() + "<br>"
+					+ "<b>Encrypted plaintext: </b>" + ax + "<br>"
+					+ "<b>Encrypt plain + pass: </b>" + bx + "<br>"
+					+ "<b>Decrypted plaintext: </b>" + cx + "<br>"
+                    + "<b>Normal plaintext: </b>" + dx;
+                    
+    if(comp8(password.value()) == false) {
+        complete_str = "Invalid password.";
+    }
+                    
     if(debug_on) {
-        console.log(ax);
+        console.log(complete_str);
     }
 
     showEncrypt.remove();
-    showEncrypt = createDiv(ax);
-    showEncrypt.position(width/ 2, 200);
+    showEncrypt = createP(complete_str);
+    showEncrypt.position(50, 150);
     showEncrypt.style('font-size', '18px');
+	showEncrypt.style('text-align', 'left');
+
+
 }
 
